@@ -29,7 +29,7 @@ cp frontend/.env.example frontend/.env
 ### 3. Start Application
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 ### 4. Access Application
