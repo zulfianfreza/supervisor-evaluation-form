@@ -1,0 +1,8 @@
+{
+  "moduleFileExtensions": ["js", "json"],
+  "rootDir": ".",
+  "testEnvironment": "node",
+  "testRegex": ".e2e-spec.js$",
+  "setupFiles": ["./__mocks__/redis.js"],
+  "maxWorkers": 2
+}
