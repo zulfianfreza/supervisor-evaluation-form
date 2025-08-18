@@ -1,4 +1,5 @@
 const httpStatus = require('http-status');
+
 const catchAsync = require('../../../../common/helpers/catchAsync');
 const apiResponse = require('../../../../common/helpers/apiResponse');
 const CONST = require('../../../../common/constants');
@@ -21,10 +22,38 @@ const list = catchAsync(async (req, res) => {
     include: [
       {
         association: 'assessment_response',
+        include: [
+          {
+            association: 'response_answers',
+          },
+        ],
       },
     ],
   });
-  apiResponse(res, messages.COMMON.OK, result);
+
+  const respondentsWithTotalScore = result.items.map((respondent) => {
+    let total_score = 0;
+
+    const item = respondent.toJSON();
+
+    // Cek apakah ada assessment_response dan response_answers
+    if (
+      item.assessment_response &&
+      item.assessment_response.response_answers &&
+      Array.isArray(item.assessment_response.response_answers)
+    ) {
+      total_score = item.assessment_response.response_answers.reduce((sum, answer) => {
+        return sum + (answer.answer || 0);
+      }, 0);
+    }
+
+    return {
+      ...item, // jika menggunakan Sequelize
+      total_score,
+    };
+  });
+
+  apiResponse(res, messages.COMMON.OK, { ...result, items: respondentsWithTotalScore });
 });
 
 const detail = catchAsync(async (req, res) => {
