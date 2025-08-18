@@ -9,6 +9,7 @@ export type TRespondent = TTimestamp & {
   years_of_service: string;
   created_at: Date;
   updated_at: Date;
+  total_score: number;
   assessment_response: TAssessmentResponse;
 };
 

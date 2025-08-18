@@ -1,31 +1,39 @@
 "use client";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useGetRespondent } from "@/services/hooks/use-respondent";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { TRespondent } from "@/types/respondent.type";
 
-type TPageProps = {
-  searchParams: {
-    id: string;
-  };
+type TDialogDetailRespondentProps = {
+  open: boolean;
+  toggle: () => void;
+  respondent?: TRespondent;
 };
 
-export default function Page({ searchParams: _ }: TPageProps) {
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id") || "";
-
-  const { data, isLoading } = useGetRespondent(id, {
-    enabled: !!id,
+export default function DialogDetailRespondent({
+  open,
+  toggle,
+  respondent,
+}: TDialogDetailRespondentProps) {
+  const { data, isLoading } = useGetRespondent(respondent?.id || "", {
+    enabled: !!open && !!respondent,
   });
 
   return (
-    <div className=" min-h-screen w-full bg-neutral-200/80 p-4">
-      <div className=" max-w-2xl w-full mx-auto">
-        <div className=" w-full aspect-[3.5/1] relative rounded-t-lg overflow-hidden bg-[url(/images/background.jpg)] bg-center bg-cover" />
-        <div className=" w-full p-6 bg-white rounded-b-lg flex flex-col gap-6">
+    <Dialog open={open} onOpenChange={toggle}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Detail Respondent</DialogTitle>
+        </DialogHeader>
+        <div className=" w-full  flex flex-col gap-6">
           <div className="flex flex-col gap-4 items-start">
             <div className="grid grid-cols-2 w-full">
               <div className=" space-y-1">
@@ -106,11 +114,8 @@ export default function Page({ searchParams: _ }: TPageProps) {
               </TableBody>
             </Table>
           </div>
-          <Link href="/" className=" text-blue-400 underline text-sm">
-            Submit another response
-          </Link>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
